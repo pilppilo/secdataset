@@ -1,0 +1,30 @@
+# Raw / downloaded data — large, reproducible via convert_dataset.py
+hf_downloaded_data/
+*.json.gz
+*.jsonl.gz
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Secrets / tokens — never commit
+.env
+.hf_token
+hf_token.txt
+*.pem
+*.key
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs
+*.log
