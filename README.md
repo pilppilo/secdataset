@@ -2,11 +2,11 @@
 
 Curated, de-duplicated fine-tuning dataset formatted strictly for **Azure AI Foundry JSONL** (`{"messages": [{"role":"system"},{"role":"user"},{"role":"assistant"}]}`) for training defensive cybersecurity and static analysis assistants (vulnerability detection, taint flow analysis, CWE classification, and secure remediation).
 
-* **Training Set:** [`train.jsonl`](file:///home/owner/secdata/train.jsonl) (**80%** — **8,000 samples**, 28 MB)
-* **Validation Set:** [`val.jsonl`](file:///home/owner/secdata/val.jsonl) / [`validation.jsonl`](file:///home/owner/secdata/validation.jsonl) (**20%** — **2,000 samples**, 6.9 MB)
+* **Training Set:** [`train.jsonl`](./train.jsonl) (**80%** — **8,000 samples**, 28 MB)
+* **Validation Set:** [`val.jsonl`](./val.jsonl) / [`validation.jsonl`](./validation.jsonl) (**20%** — **2,000 samples**, 6.9 MB)
 * **Total Formatted Samples:** **10,000 samples** extracted and normalized directly from `Vyber07/cyber-security`.
 * **Format:** Strict single-line JSONL conforming to Azure AI Foundry specifications.
-* **License:** Apache-2.0 (see [`DATASET_README.md`](file:///home/owner/secdata/DATASET_README.md) for upstream dataset card).
+* **License:** Apache-2.0 (see [`DATASET_README.md`](./DATASET_README.md) for upstream dataset card).
 
 ---
 
@@ -91,6 +91,6 @@ python3 convert_dataset.py --download-hf --max-hf-files 50 --train-out train.jso
 1. Navigate to **[Azure AI Foundry Portal](https://ai.azure.com/)**.
 2. Go to **Fine-tuning** $\rightarrow$ **+ Fine-tune model**.
 3. Select your base model: **Phi-4** (or `Phi-3.5-mini-instruct` / `Ministral-3B`).
-4. In the **Training data** section, upload [`train.jsonl`](file:///home/owner/secdata/train.jsonl).
-5. In the **Validation data** section, upload [`val.jsonl`](file:///home/owner/secdata/val.jsonl).
+4. In the **Training data** section, upload [`train.jsonl`](./train.jsonl).
+5. In the **Validation data** section, upload [`val.jsonl`](./val.jsonl).
 6. Configure hyperparameters (e.g., Learning Rate: `2e-5`, Epochs: `3-5`, Batch Size: `4-8`) and start training.
