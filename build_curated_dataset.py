@@ -644,7 +644,8 @@ def main():
     random.seed(42)
     random.shuffle(records)
     
-    val_size = int(len(records) * 0.2)
+    # 80/20 Train-Validation Split
+    val_size = int(round(len(records) * 0.20))
     val_records = records[:val_size]
     train_records = records[val_size:]
     
@@ -652,11 +653,17 @@ def main():
         for r in train_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
             
+    with open("val.jsonl", "w", encoding="utf-8") as f:
+        for r in val_records:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+            
     with open("validation.jsonl", "w", encoding="utf-8") as f:
         for r in val_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
             
-    print(f"[Done] Created train.jsonl ({len(train_records)} records) and validation.jsonl ({len(val_records)} records).")
+    print(f"[Done] Created 80/20 split:")
+    print(f"  - train.jsonl: {len(train_records)} samples (80%)")
+    print(f"  - val.jsonl:   {len(val_records)} samples (20%)")
 
 if __name__ == "__main__":
     main()

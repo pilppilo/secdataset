@@ -99,9 +99,9 @@ def process_raw_item(item: Any, source_name: str = "") -> List[Dict[str, Any]]:
         msgs = []
         has_system = False
         for m in item["messages"]:
-            if isinstance(m, dict) and "role" in m and "content" in m:
-                r = normalize_role(m["role"])
-                c = str(m["content"]).strip()
+            if isinstance(m, dict):
+                r = normalize_role(m.get("role", "user"))
+                c = str(m.get("content", "")).strip()
                 if c:
                     if r == "system":
                         has_system = True
@@ -109,12 +109,26 @@ def process_raw_item(item: Any, source_name: str = "") -> List[Dict[str, Any]]:
         if msgs:
             if not has_system:
                 msgs.insert(0, {"role": "system", "content": DEFAULT_SYSTEM_PROMPT})
-            # Ensure valid conversation sequence
             if len(msgs) >= 3 and any(m["role"] == "assistant" for m in msgs) and any(m["role"] == "user" for m in msgs):
                 results.append({"messages": msgs})
                 return results
 
-    # 2. ShareGPT format: "conversations"
+    # 2. Direct system / user / assistant dictionary keys (e.g. CyberSec-Dataset)
+    if "user" in item and "assistant" in item:
+        u_text = str(item["user"]).strip()
+        a_text = str(item["assistant"]).strip()
+        s_text = str(item.get("system") or DEFAULT_SYSTEM_PROMPT).strip()
+        if u_text and a_text:
+            results.append({
+                "messages": [
+                    {"role": "system", "content": s_text},
+                    {"role": "user", "content": u_text},
+                    {"role": "assistant", "content": a_text}
+                ]
+            })
+            return results
+
+    # 3. ShareGPT format: "conversations"
     if "conversations" in item and isinstance(item["conversations"], list) and len(item["conversations"]) >= 2:
         msgs = []
         has_system = False
@@ -440,8 +454,16 @@ def get_hf_token(provided_token: Optional[str] = None) -> Optional[str]:
         except Exception:
             pass
 
-    # 3. Local .hf_token or .env file in workspace
-    for local_file in (".hf_token", "hf_token.txt", ".env"):
+    # 3. Local .hf_token, ~/hftoken, or .env file in workspace
+    token_files = [
+        os.path.expanduser("~/hftoken"),
+        os.path.expanduser("~/hftoken.txt"),
+        os.path.expanduser("~/.hftoken"),
+        ".hf_token",
+        "hf_token.txt",
+        ".env"
+    ]
+    for local_file in token_files:
         if os.path.exists(local_file):
             try:
                 with open(local_file, "r", encoding="utf-8") as f:
